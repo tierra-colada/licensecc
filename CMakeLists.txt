@@ -61,15 +61,11 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		endif()
 	endif(THREADS_HAVE_PTHREAD_ARG)
 
-	#Zlib required with old openssl version < 1.0.1f in centos 7
-	IF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
-		SET ( ZLIB_USE_STATIC_LIBS ON ) 
-		find_package(ZLIB REQUIRED)
-		list(APPEND EXTERNAL_LIBS "${ZLIB_LIBRARIES}")
-		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - licensecc")
-	ELSE(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
-	    MESSAGE(STATUS "openssl ${OPENSSL_VERSION} zlib not required - licensecc")
-	ENDIF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
+	#Zlib required  by openssl
+	SET ( ZLIB_USE_STATIC_LIBS ON ) 
+	find_package(ZLIB REQUIRED)
+	list(APPEND EXTERNAL_LIBS "${ZLIB_LIBRARIES}")
+	MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - licensecc")
 	
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
@@ -90,7 +86,6 @@ else(UNIX)
 			string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 			string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 			#list(APPEND CMAKE_CXX_FLAGS_DEBUG "/MTd")
-			SET(Boost_USE_STATIC_RUNTIME ON)
 		endif(STATIC_RUNTIME)
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 	    list(APPEND EXTERNAL_LIBS "bcrypt" "crypt32" "ws2_32" "iphlpapi")
@@ -144,6 +139,7 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
 	    message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
 SET( Boost_USE_STATIC_LIBS ON )
+SET( Boost_USE_STATIC_RUNTIME ON )	# without this configuration on Unix fails
 find_package(Boost COMPONENTS unit_test_framework system filesystem)
 #if boost is found enable tests
 IF(Boost_FOUND)
