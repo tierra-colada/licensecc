@@ -4,6 +4,8 @@ SET(LICENSECC_SHORT_LICENSE "BSD Software License")
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES OFF) #keys are generated in the source tree by default
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+# use static linking
+SET(STATIC_RUNTIME ON)
 
 IF(NOT LCC_PROJECT_NAME)
 	message(STATUS "You should define a variable LCC_PROJECT_NAME containing the name of the software you want to add a license to."
