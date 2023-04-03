@@ -1,3 +1,4 @@
 [submodule "extern/license-generator"]
 	path = extern/license-generator
 	url = https://github.com/tierra-colada/lcc-license-generator.git
+	branch = develop
